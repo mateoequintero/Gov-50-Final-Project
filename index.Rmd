@@ -1,7 +1,7 @@
 ---
 title: "Gov 50 Final Project"
 author: "Mateo Quintero"
-description: "My final project"
+description: "Political and Partisan Influences on American Public Sentiment of the Economy"
 output:
   distill::distill_article:
     self_contained: false
@@ -11,4 +11,49 @@ output:
 
 ## Project thoughts
 
-I am interested in exploring data related to the differences in standards of living and weatlh across the Commonwealth of Massachusetts. Specifically, I hope to analyze the poverty rates, revenue, poverty rates, etc. to see if there is a statistically significant difference between the standards of living across Massachusetts various counties and/or municipalities, specifically looking for a potential statistically significant difference between the Boston metro area and the rest of the Commonwealth
+I'm interested in exploring data regarding American public opinion on the unemployment rate at its actual performance, utilizing data from the Burea of Labor Statistics and the American National Elections Studies (ANES). More specifically, I plan to compare the unemployment rate since 1986 to 2020, comparing if there are partisan differences in the public opinion of the state of unemployment in the American public opinion, seeing if there are potential biases based on the which of the 2 major political parties controls the White House.
+
+## Data Sets References
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(ggthemes)
+
+actual_unemployment <- read_excel("~/Downloads/SeriesReport-20231109175016_71b376.xlsx")
+
+overall_unemployment_opinion <- read_csv("~/Downloads/The Guide to Public Opinion and Electoral Behavior.csv") |>
+  select(-c(Demographics, Subgroup)) |>
+  filter(Year >= 2000)
+
+actual_unemployment
+
+overall_unemployment_opinion
+```
+## Data Visualizations
+
+```{r}
+overall_unemp_opinion_graph <- overall_unemployment_opinion |>
+  group_by(Year) |>
+  summarize(perc_better = `Better`/`Total Cases`,
+            perc_worse = `Worse`/`Total Cases`,
+            perc_same = `Stayed same`/`Total Cases`) |>
+  ggplot(aes(x = Year)) +
+  geom_smooth(aes(y = perc_worse, color = "Worse")) +
+  geom_smooth(aes(y = perc_better, color = "Better")) +
+  geom_smooth(aes(y = perc_same, color = "Same")) +
+  labs(x = "Year", y = "Percent",
+       title = "U.S. Opinion on State of Unemployment",
+       subtitle = "American National Election Studies") +
+  theme_fivethirtyeight()
+
+overall_unemp_opinion_graph
+```
+
+```{r}
+actual_predicted_unemployment_graph <- overall_unemployment_opinion |>
+  mutate(avg_annual_unemployment == ("...2" + "...3" + "...4" + "...5" + "...6" + "...7" + 
+                                       "...8" + "...9" + "...10" + "...11" + "...12" + "...13")/12) |>
+    ggplot(aes(x = year, y = avg_annual_unemployment)) + 
+    geom_point() + geom_smooth()
+```
