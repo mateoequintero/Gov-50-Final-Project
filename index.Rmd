@@ -13,6 +13,9 @@ output:
 
 I'm interested in exploring data regarding American public opinion on the unemployment rate at its actual performance, utilizing data from the Burea of Labor Statistics and the American National Elections Studies (ANES). More specifically, I plan to compare the unemployment rate since 1986 to 2020, comparing if there are partisan differences in the public opinion of the state of unemployment in the American public opinion, seeing if there are potential biases based on the which of the 2 major political parties controls the White House.
 
+## Proposal
+Does political affiliation impact perception of unemployment levels? In this study, I plan to analize the extent to which political affiliation may impact the perception of Presidential handling of the economy and of the state of unemployment. I hypothesize that political affiliation that aligns with that of the President at the time correlates to positive views on unemployment and approval of the President's handling of the economy. During periods of Democratic presidencies, I expect Democrats to approve of the Presidential approval of the economy and believe unemployment is going down, and disapprove of the President and believe unemployment is rising during Republican presidencies. My sample is comprised of American voting-age adults during each Presidential election since the year 2000. My unit of analysis is American voting-age adults. The explanatory variables of interest is whether there is a Republican or Democrat in office or if the unemployment rate is low or high. My outcome variables is the the percentage of U.S. voting age adults that support Presidential handling of the economy and there opinion on the trajectory of unemployment. If I observe Republicans believe the unemployment rate is decreasing and the President is doing a good job of handling the economy, and the unemployment rate is actually rising and their is a Republican is in office, this would provide support for my hypotheses.
+
 ## Data Sets References
 
 ```{r}
@@ -39,21 +42,13 @@ overall_unemp_opinion_graph <- overall_unemployment_opinion |>
             perc_worse = `Worse`/`Total Cases`,
             perc_same = `Stayed same`/`Total Cases`) |>
   ggplot(aes(x = Year)) +
-  geom_smooth(aes(y = perc_worse, color = "Worse")) +
-  geom_smooth(aes(y = perc_better, color = "Better")) +
-  geom_smooth(aes(y = perc_same, color = "Same")) +
+  geom_smooth(aes(y = perc_worse, color = "Worse", method = "loess", se = FALSE)) +
+  geom_smooth(aes(y = perc_better, color = "Better", method = "loess", se = FALSE)) +
+  geom_smooth(aes(y = perc_same, color = "Same", method = "loess", se = FALSE)) +
   labs(x = "Year", y = "Percent",
-       title = "U.S. Opinion on State of Unemployment",
+       title = "U.S. Public Opinion on Unemployment",
        subtitle = "American National Election Studies") +
   theme_fivethirtyeight()
 
 overall_unemp_opinion_graph
-```
-
-```{r}
-actual_predicted_unemployment_graph <- overall_unemployment_opinion |>
-  mutate(avg_annual_unemployment == ("...2" + "...3" + "...4" + "...5" + "...6" + "...7" + 
-                                       "...8" + "...9" + "...10" + "...11" + "...12" + "...13")/12) |>
-    ggplot(aes(x = year, y = avg_annual_unemployment)) + 
-    geom_point() + geom_smooth()
 ```
