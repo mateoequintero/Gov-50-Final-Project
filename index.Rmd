@@ -46,7 +46,7 @@ overall_unemp_opinion_graph <- overall_unemployment_opinion |>
   geom_smooth(aes(y = perc_better, color = "Better", method = "loess", se = FALSE)) +
   geom_smooth(aes(y = perc_same, color = "Same", method = "loess", se = FALSE)) +
   labs(x = "Year", y = "Percent",
-       title = "U.S. Public Opinion on Unemployment",
+       title = "Has Unemployment Gotten Better or Worse?",
        subtitle = "American National Election Studies") +
   theme_fivethirtyeight()
 
