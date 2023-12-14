@@ -31,8 +31,8 @@ presidents <- presidential |>
   rename(President = name,
          Party = party) |>
    mutate(President = case_when(President == 'Bush' & end == 1993 ~ "H. W. Bush", 
-                                           President == 'Bush' & end == 2009 ~ "W. Bush",
-                                           TRUE ~ President)) |>
+                                President == 'Bush' & end == 2009 ~ "W. Bush",
+                                TRUE ~ President)) |>
   select(-c(start, end))
  
 overall_president_opinion <- read_csv("~/Downloads/The Guide to Public Opinion and Electoral Behavior (2).csv") |>
@@ -40,13 +40,14 @@ overall_president_opinion <- read_csv("~/Downloads/The Guide to Public Opinion a
   mutate(Approve = `Approve strongly` + `Approve not strongly`,
          Disapprove = `Disapprove not strongly` + `Disapprove strongly`,
          President = case_when(Year <= 1988 ~ "Reagan",
-                                           Year > 1988 & Year <= 1992 ~ "H. W. Bush",
-                                           Year > 1992 & Year <= 2000 ~ "Clinton",
-                                           Year > 2000 & Year <= 2008 ~ "W. Bush",
-                                           Year > 2008 & Year <= 2016 ~ "Obama",
-                                           Year > 2016 ~ "Trump")) |>
+                               Year > 1988 & Year <= 1992 ~ "H. W. Bush",
+                               Year > 1992 & Year <= 2000 ~ "Clinton",
+                               Year > 2000 & Year <= 2008 ~ "W. Bush",
+                               Year > 2008 & Year <= 2016 ~ "Obama",
+                               Year > 2016 ~ "Trump")) |>
   rename(`Political Affiliation` = Subgroup) |>
-  select(-c(`Approve strongly`, `Approve not strongly`, `Disapprove not strongly`, `Disapprove strongly`, `Demographics`)) |>
+  select(-c(`Approve strongly`, `Approve not strongly`, `Disapprove not strongly`,
+            `Disapprove strongly`, `Demographics`)) |>
   inner_join(presidents) |>
   mutate(`Alignments` = if_else(Party == 'Republican' & `Political Affiliation` == 'Republicans (incl. leaners)' |
                                      Party == 'Democratic' & `Political Affiliation` == 'Democrats (incl. leaners)' ,'Aligned', 'Unaligned')) |>
@@ -83,8 +84,14 @@ This graph utilizes data directly imported and wrangled from American National E
 ```{r}
 alignment_support_plot <- overall_president_opinion |>
   mutate(avg_support = `Approve`/`Total Cases`) |>
-ggplot(mapping = aes(x = Alignments, y = avg_support, fill = `Political Affiliation`)) + geom_col(position = "dodge") + labs(x = "Political Affiliation and Alignment with President" ,
-y = "Average % Support of President on Economy") + scale_fill_manual(values = c('Democrats (incl. leaners)' = "skyblue", 'Republicans (incl. leaners)' = "indianred1")) + theme_economist()
+ggplot(mapping = aes(x = Alignments, 
+                     y = avg_support, fill = `Political Affiliation`)) +
+  geom_col(position = "dodge") + 
+  labs(x = "Political Affiliation and Alignment with President" ,
+       y = "Average % Support of President on Economy") +
+  scale_fill_manual(values = c('Democrats (incl. leaners)' = "skyblue", 
+                               'Republicans (incl. leaners)' = "indianred1")) + 
+  theme_economist()
 
 alignment_support_plot
 ```
