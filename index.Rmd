@@ -50,7 +50,8 @@ overall_president_opinion <- read_csv("~/Downloads/The Guide to Public Opinion a
             `Disapprove strongly`, `Demographics`)) |>
   inner_join(presidents) |>
   mutate(`Alignments` = if_else(Party == 'Republican' & `Political Affiliation` == 'Republicans (incl. leaners)' |
-                                     Party == 'Democratic' & `Political Affiliation` == 'Democrats (incl. leaners)' ,'Aligned', 'Unaligned')) |>
+                                Party == 'Democratic' & `Political Affiliation` == 'Democrats (incl. leaners)' ,
+                                'Aligned', 'Unaligned')) |>
   arrange(Year)
 
 knitr::kable(overall_president_opinion)
